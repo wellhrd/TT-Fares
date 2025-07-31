@@ -1,21 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Web site created using create-react-app" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
       Only files inside the `public` folder can be referenced from the HTML.
@@ -24,12 +22,76 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
+  <title>TT Fares </title>
+  <!-- Splash screen styles -->
+  <style>
+    #splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+      transition: opacity 0.7s ease;
+      padding: 0 20px;
+    }
+
+    #splash-screen.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .logo-pulse {
+      /* width: 120px; */
+      width: 30vw;
+      max-width: 150px;;
+      height: auto;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .loading-text {
+      font-family: sans-serif;
+      color: #555;
+      font-size: 16px;
+      margin-top: 12px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Splash Screen -->
+  <div id="splash-screen">
+    <img src="%PUBLIC_URL%/LogoV1.png" alt="TT Fares Logo" class="logo-pulse" />
+    <div class="loading-text">Loading TT Fares...</div>
+  </div>
+
+
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+  <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
 
@@ -39,5 +101,31 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-  </body>
+
+  <!-- Hide splash screen after page load -->
+  <!-- <script>
+      window.addEventListener("load", () => {
+        const splash = document.getElementById("splash-screen");
+        splash.classList.add("fade-out");
+        setTimeout(() => splash.remove(), 400);
+      });
+    </script> -->
+  <script>
+    const splash = document.getElementById("splash-screen");
+    const MIN_SPLASH_TIME = 2000; // 2 seconds
+    const startTime = Date.now();
+
+    window.addEventListener("load", () => {
+      const elapsed = Date.now() - startTime;
+      const remainingTime = Math.max(0, MIN_SPLASH_TIME - elapsed);
+
+      setTimeout(() => {
+        splash.classList.add("fade-out");
+        setTimeout(() => splash.remove(), 400); // match fade transition
+      }, remainingTime);
+    });
+  </script>
+
+</body>
+
 </html>
