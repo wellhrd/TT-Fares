@@ -1,38 +1,11 @@
-//Database connection and routing 
-import { useEffect, useState } from 'react'
-import { createClient } from "@supabase/supabase-js";
-//import { supabase } from './utils/supabase'
-
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 // import logo from './logo.svg';
 import './App.css';
 import Home from './pages/home';
 import FareResult from './pages/fareResult';
-
-// Initialize db client 
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL,
-  process.env.REACT_APP_SUPABASE_ANON_KEY
-);
-
-// const supabaseUrl = process.env.REACT_APP_SUPABASE_URL
-// const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY
-
-// export const supabase = createClient(supabaseUrl, supabaseKey)
+import AddFare from './pages/addFare';
 
 function App() {
-
-  const [fares, setFares] = useState([]);
-
-  useEffect(() => {
-    const loadFares = async () => {
-      const { data, error } = await supabase
-        .from('fares')
-        .select('*')
-      if (!error) setFares(data)
-    }
-    loadFares()
-  }, [])
 
   return (
       <div className="App">
@@ -43,22 +16,45 @@ function App() {
           </h3>
 
           <p className="text-red-500 "> Geo-tagging coming soon! </p>
+        {/* Navigation Menu */}
+        <nav style={{ margin: '20px 0' }}>
+          <Link 
+            to="/" 
+            style={{ 
+              margin: '0 15px', 
+              color: '#61dafb', 
+              textDecoration: 'none',
+              padding: '5px 10px',
+              borderRadius: '4px',
+              border: '1px solid #61dafb'
+            }}
+          >
+            Check Fares
+          </Link>
+          <Link 
+            to="/add-fare" 
+            style={{ 
+              margin: '0 15px', 
+              color: '#61dafb', 
+              textDecoration: 'none',
+              padding: '5px 10px',
+              borderRadius: '4px',
+              border: '1px solid #61dafb'
+            }}
+          >
+            Add Fare
+          </Link>
+        </nav>
 
-          {/* <ul>
-            {fares.map(f => (
-              <li key={f.id}>
-                {f.origin}  → {f.destination}: ${f.fare}</li>
-            ))}
-          </ul> */}
 
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/fare" element={<FareResult />} />
+            <Route path="/add-fare" element={<AddFare />} />
           </Routes>
 
         </header>
       </div>
   );
 }
-
 export default App;
