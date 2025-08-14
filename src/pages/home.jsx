@@ -101,6 +101,7 @@ function Home() {
 
   return (
     <div>
+      
       <h1>🇹🇹 TTfares Calculator</h1>
      
       {/* Divider Component */}

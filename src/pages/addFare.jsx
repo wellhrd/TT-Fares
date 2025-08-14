@@ -23,7 +23,7 @@ function AddFare() {
     try {
       const { data, error } = await supabase
         .from("fares")
-        .select("origin, destination");
+        .select("origin, destination, fare");
 
       if (error) {
         console.error("Error fetching locations:", error);
