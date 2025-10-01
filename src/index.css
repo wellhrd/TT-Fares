@@ -15,3 +15,47 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* .trinidad-flag-btn {
+  background-color: #ff0000; /* red base */
+/* } */
+/*
+.trinidad-flag-btn::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: repeating-linear-gradient(
+    135deg,
+    #e4b3b3 0%,
+    #ff0000 30%,
+    white 30%,
+    white 35%,
+    black 35%,
+    black 45%,
+    white 45%,
+    white 50%,
+    #ff0000 50%
+  );
+  z-index: 0;
+}
+
+.trinidad-flag-btn > * {
+  position: relative;
+  z-index: 1;
+}
+.trinidad-flag-btn:hover::before {
+  animation: slide 1s linear infinite;
+} */
+
+.trinidad-flag-btn {
+  background-image: url('/src/assets/ttFlag.svg');
+  background-size: cover;
+  background-position: center;
+  color: rgb(0, 0, 0);
+}
+.trinidad-flag-btn:hover {
+  filter: brightness(1.1);
+}

@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Button from '@mui/material/Button';
-import ReactDOM from 'react-dom/client';
 import { useNavigate } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 
@@ -25,7 +23,7 @@ function Home() {
         console.log("=== DEBUG INFO ===");
         console.log("Supabase URL:", process.env.REACT_APP_SUPABASE_URL);
         console.log("Supabase Key exists:", !!process.env.REACT_APP_SUPABASE_ANON_KEY);
-        
+
         console.log("Fetching all fare data from database...");
         const { data, error } = await supabase
           .from("fares")
@@ -37,7 +35,7 @@ function Home() {
           console.error("Error fetching fare data:", error.message);
           console.error("Error details:", error);
           console.log("Using fallback locations due to database error");
-          // Fallback locations based on your database screenshot
+          // Fallback locations based on database table at the time
           setLocations(["Port of Spain", "San Fernando", "Arima", "Curepe"]);
           setFareData([]); // Empty fare data, will need to fetch in FareResult
           setLoading(false);
@@ -101,18 +99,23 @@ function Home() {
 
   return (
     <div>
-      
-      <h1>🇹🇹 TTfares Calculator</h1>
-     
+
+      <div className="text-3xl font-bold mb-4 text-center">
+        <h1> Calculate bus or taxi fares for Trinidad </h1>
+      </div>
+      <p className="mb-6 text-center text-gray-600">
+        Select your origin and destination to check the fare.
+      </p>
+
       {/* Divider Component */}
       <div className="flex w-full flex-col lg:flex-row">
         <div className="card bg-base-300 rounded-box grid h-32 grow place-items-center">
-          From:
-          <select 
+          FROM:
+          <select
             value={origin}
             onChange={(e) => setOrigin(e.target.value)}
             disabled={loading}
-            style={{ padding: '5px', minWidth: '150px' }}
+            style={{ padding: '5px', minWidth: '150px', color: 'black' }}
           >
             <option value="">
               {loading ? "Loading locations..." : "Select origin"}
@@ -128,16 +131,18 @@ function Home() {
             )}
           </select>
         </div>
+
         <div className="divider lg:divider-horizontal">
-          or
+          &nbsp;&nbsp;
         </div>
+
         <div className="card bg-base-300 rounded-box grid h-32 grow place-items-center">
           TO:
-          <select 
+          <select
             value={destination}
             onChange={(e) => setDestination(e.target.value)}
             disabled={loading}
-            style={{ padding: '5px', minWidth: '150px' }}
+            style={{ padding: '5px', minWidth: '150px', color: 'black' }}
           >
             <option value="">
               {loading ? "Loading locations..." : "Select destination"}
@@ -157,16 +162,18 @@ function Home() {
       </div>
       <br />
       <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-        <button 
+        <button
           type="button"
           onClick={handleSubmit}
           disabled={loading || !origin || !destination}
-          className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          // className="text-white bg-gradient-to-r from-red-500 via-white-600 to-red-300 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="trinidad-flag-btn text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 disabled:opacity-40 disabled:cursor-not-allowed relative overflow-hidden"
         >
+          {/* > */}
           {loading ? "Loading..." : "Check for Fare"}
         </button>
-        
-        <button 
+
+        <button
           type="button"
           onClick={handleReset}
           disabled={loading}

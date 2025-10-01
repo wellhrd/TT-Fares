@@ -14,6 +14,12 @@ function AddFare() {
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  
+  // Separate states for handling new location inputs
+  const [showNewOrigin, setShowNewOrigin] = useState(false);
+  const [showNewDestination, setShowNewDestination] = useState(false);
+  const [newOriginText, setNewOriginText] = useState("");
+  const [newDestinationText, setNewDestinationText] = useState("");
 
   useEffect(() => {
     fetchLocations();
@@ -44,15 +50,56 @@ function AddFare() {
     }
   };
 
+  const handleOriginChange = (e) => {
+    const value = e.target.value;
+    if (value === "__new__") {
+      setShowNewOrigin(true);
+      setOrigin("");
+      setNewOriginText("");
+    } else {
+      setShowNewOrigin(false);
+      setOrigin(value);
+      setNewOriginText("");
+    }
+  };
+
+  const handleDestinationChange = (e) => {
+    const value = e.target.value;
+    if (value === "__new__") {
+      setShowNewDestination(true);
+      setDestination("");
+      setNewDestinationText("");
+    } else {
+      setShowNewDestination(false);
+      setDestination(value);
+      setNewDestinationText("");
+    }
+  };
+
+  const handleNewOriginTextChange = (e) => {
+    const value = e.target.value;
+    setNewOriginText(value);
+    setOrigin(value);
+  };
+
+  const handleNewDestinationTextChange = (e) => {
+    const value = e.target.value;
+    setNewDestinationText(value);
+    setDestination(value);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!origin || !destination || !fare) {
+    const finalOrigin = showNewOrigin ? newOriginText.trim() : origin;
+    const finalDestination = showNewDestination ? newDestinationText.trim() : destination;
+    
+    if (!finalOrigin || !finalDestination || !fare) {
       setMessage("Please fill in all fields");
       return;
     }
 
-    if (origin === destination) {
+    if (finalOrigin === finalDestination) {
       setMessage("Origin and destination cannot be the same");
       return;
     }
@@ -70,7 +117,7 @@ function AddFare() {
       const { data: existingData, error: checkError } = await supabase
         .from("fares")
         .select("*")
-        .or(`and(origin.eq.${origin},destination.eq.${destination}),and(origin.eq.${destination},destination.eq.${origin})`);
+        .or(`and(origin.eq.${finalOrigin},destination.eq.${finalDestination}),and(origin.eq.${finalDestination},destination.eq.${finalOrigin})`);
 
       if (checkError) {
         throw checkError;
@@ -87,8 +134,8 @@ function AddFare() {
         .from("fares")
         .insert([
           {
-            origin: origin,
-            destination: destination,
+            origin: finalOrigin,
+            destination: finalDestination,
             fare: parseFloat(fare)
           }
         ]);
@@ -101,6 +148,10 @@ function AddFare() {
       setOrigin("");
       setDestination("");
       setFare("");
+      setShowNewOrigin(false);
+      setShowNewDestination(false);
+      setNewOriginText("");
+      setNewDestinationText("");
       
       // Refresh locations list
       fetchLocations();
@@ -118,6 +169,38 @@ function AddFare() {
     setDestination("");
     setFare("");
     setMessage("");
+    setShowNewOrigin(false);
+    setShowNewDestination(false);
+    setNewOriginText("");
+    setNewDestinationText("");
+  };
+
+  // Improved styles for better Edge browser compatibility
+  const inputStyle = {
+    width: '100%',
+    padding: '8px',
+    borderRadius: '4px',
+    border: '1px solid #ccc',
+    fontSize: '14px',
+    backgroundColor: '#ffffff',
+    color: '#333333',
+    boxSizing: 'border-box'
+  };
+
+  const selectStyle = {
+    ...inputStyle,
+    appearance: 'none',
+    backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e")`,
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'right 8px center',
+    backgroundSize: '16px',
+    paddingRight: '32px'
+  };
+
+  const optionStyle = {
+    backgroundColor: '#ffffff',
+    color: '#333333',
+    padding: '4px'
   };
 
   return (
@@ -142,29 +225,54 @@ function AddFare() {
           <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
             Origin:
           </label>
-          <select
-            value={origin}
-            onChange={(e) => setOrigin(e.target.value)}
-            disabled={loading}
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
-          >
-            <option value="">Select origin</option>
-            {locations.filter(loc => loc !== destination).map((location, index) => (
-              <option key={`origin-${index}`} value={location}>
-                {location}
-              </option>
-            ))}
-            <option value="__new__">+ Add new location</option>
-          </select>
-          
-          {origin === "__new__" && (
-            <input
-              type="text"
-              placeholder="Enter new origin location"
-              value={origin === "__new__" ? "" : origin}
-              onChange={(e) => setOrigin(e.target.value)}
-              style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd', marginTop: '5px' }}
-            />
+          {!showNewOrigin ? (
+            <select
+              value={origin}
+              onChange={handleOriginChange}
+              disabled={loading}
+              style={selectStyle}
+            >
+              <option value="" style={optionStyle}>Select origin</option>
+              {locations.filter(loc => loc !== destination).map((location, index) => (
+                <option key={`origin-${index}`} value={location} style={optionStyle}>
+                  {location}
+                </option>
+              ))}
+              <option value="__new__" style={optionStyle}>+ Add new location</option>
+            </select>
+          ) : (
+            <div>
+              <input
+                type="text"
+                placeholder="Enter new origin location"
+                value={newOriginText}
+                onChange={handleNewOriginTextChange}
+                disabled={loading}
+                style={inputStyle}
+                autoFocus
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setShowNewOrigin(false);
+                  setOrigin("");
+                  setNewOriginText("");
+                }}
+                disabled={loading}
+                style={{
+                  marginTop: '5px',
+                  padding: '4px 8px',
+                  fontSize: '12px',
+                  backgroundColor: '#f8f9fa',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  // color: 'blue'
+                }}
+              >
+                Back to list
+              </button>
+            </div>
           )}
         </div>
 
@@ -172,29 +280,53 @@ function AddFare() {
           <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
             Destination:
           </label>
-          <select
-            value={destination}
-            onChange={(e) => setDestination(e.target.value)}
-            disabled={loading}
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
-          >
-            <option value="">Select destination</option>
-            {locations.filter(loc => loc !== origin).map((location, index) => (
-              <option key={`destination-${index}`} value={location}>
-                {location}
-              </option>
-            ))}
-            <option value="__new__">+ Add new location</option>
-          </select>
-          
-          {destination === "__new__" && (
-            <input
-              type="text"
-              placeholder="Enter new destination location"
-              value={destination === "__new__" ? "" : destination}
-              onChange={(e) => setDestination(e.target.value)}
-              style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd', marginTop: '5px' }}
-            />
+          {!showNewDestination ? (
+            <select
+              value={destination}
+              onChange={handleDestinationChange}
+              disabled={loading}
+              style={selectStyle}
+            >
+              <option value="" style={optionStyle}>Select destination</option>
+              {locations.filter(loc => loc !== origin).map((location, index) => (
+                <option key={`destination-${index}`} value={location} style={optionStyle}>
+                  {location}
+                </option>
+              ))}
+              <option value="__new__" style={optionStyle}>+ Add new location</option>
+            </select>
+          ) : (
+            <div>
+              <input
+                type="text"
+                placeholder="Enter new destination location"
+                value={newDestinationText}
+                onChange={handleNewDestinationTextChange}
+                disabled={loading}
+                style={inputStyle}
+                autoFocus
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setShowNewDestination(false);
+                  setDestination("");
+                  setNewDestinationText("");
+                }}
+                disabled={loading}
+                style={{
+                  marginTop: '5px',
+                  padding: '4px 8px',
+                  fontSize: '12px',
+                  backgroundColor: '#f8f9fa',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                Back to list
+              </button>
+            </div>
           )}
         </div>
 
@@ -210,14 +342,14 @@ function AddFare() {
             onChange={(e) => setFare(e.target.value)}
             disabled={loading}
             placeholder="Enter fare amount"
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+            style={inputStyle}
           />
         </div>
 
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
           <button 
             type="submit"
-            disabled={loading || !origin || !destination || !fare}
+            disabled={loading || (!origin && !newOriginText) || (!destination && !newDestinationText) || !fare}
             className="text-white bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 shadow-lg shadow-green-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Adding..." : "Add Fare"}

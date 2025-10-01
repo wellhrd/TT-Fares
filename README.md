@@ -1,3 +1,10 @@
+# What's TT Fares?
+TTfares is a simple fare calculator designed to help commuters in Trinidad know the cost of bus, maxi, or taxi trips between major locations. Instead of guessing or asking around, you can check your fare instantly.
+
+Our goal is to make public transport in Trinidad more transparent and easier for everyone — whether you're a daily commuter, student, or visitor.
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
