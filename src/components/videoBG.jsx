@@ -2,7 +2,7 @@ import React from 'react';
 
 function VideoBG() {
     return (
-        <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 pointer-events-none rounded-b-3xl overflow-hidden">
             <video
                 src="/highwayHyperlapse.mp4"
                 type="video/mp4"
@@ -13,7 +13,7 @@ function VideoBG() {
                 className="w-full h-full object-cover"
             />
             {/* Dark Overlay - moved inside to properly stack above video */}
-            <div className="absolute inset-0 bg-black opacity-70 pointer-events-none"></div>
+            <div className="absolute inset-0 bg-black opacity-70 pointer-events-none "></div>
         </div>
     )
 }

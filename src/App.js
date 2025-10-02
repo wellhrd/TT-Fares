@@ -14,7 +14,7 @@ function App() {
       <div className="flex flex-col min-h-screen">
 
         {/* Main content area */}
-        <header className="relative overflow-hidden bg-[#282c34] text-white flex flex-col items-center justify-center flex-1 text-[calc(10px+2vmin)] p-8">
+        <header className="relative overflow-hidden bg-[#282c34] text-white flex flex-col items-center justify-center flex-1 text-[calc(10px+2vmin)] p-8 rounded-b-3xl">
           <VideoBG />
 
           <h3 className="relative z-10text-base font-mono underline">

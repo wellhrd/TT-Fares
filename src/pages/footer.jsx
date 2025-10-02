@@ -3,7 +3,9 @@ import Image from '../assets/3D_logo.png';
 
 function Footer() {
   return (
-    <div className="px-4 pt-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8">
+    <footer className="w-full bg-gradient-to-b from-gray-200 to-red-300 rounded-t-3xl shadow-[inset_0_8px_10px_rgba(0,0,0,0.45)] relative overflow-hidden">
+
+    <div className="px-4 pt-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8" > 
       <div className="grid gap-10 row-gap-6 mb-8 sm:grid-cols-2 lg:grid-cols-4">
         <div className="sm:col-span-2">
           <a
@@ -146,6 +148,7 @@ function Footer() {
         </ul>
       </div>
     </div>
+    </footer>
   );
 };
 
