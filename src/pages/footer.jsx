@@ -66,7 +66,7 @@ function Footer() {
               title="Our email"
               className="transition-colors duration-300 text-deep-purple-accent-400 hover:text-deep-purple-800"
             >
-              mcwalters2@gmail.com
+              mcwalters2@iCloud.com
             </a>
           </div>
           <div className="flex">
