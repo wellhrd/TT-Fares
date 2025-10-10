@@ -113,21 +113,31 @@ function AddFare() {
     setMessage("");
 
     try {
-      // Check if route already exists
-      const { data: existingData, error: checkError } = await supabase
+      // ✅ FIXED: Check for EXACT route only (same direction)
+      const { data: exactMatch, error: checkError } = await supabase
         .from("fares")
         .select("*")
-        .or(`and(origin.eq.${finalOrigin},destination.eq.${finalDestination}),and(origin.eq.${finalDestination},destination.eq.${finalOrigin})`);
+        .eq("origin", finalOrigin)
+        .eq("destination", finalDestination)
+        .maybeSingle();
 
       if (checkError) {
         throw checkError;
       }
 
-      if (existingData && existingData.length > 0) {
-        setMessage("This route already exists. Please update the existing fare instead.");
+      if (exactMatch) {
+        setMessage("This exact route already exists. Please update the existing fare instead.");
         setLoading(false);
         return;
       }
+
+      // ✅ NEW: Check if reverse route exists (optional info for user)
+      const { data: reverseMatch } = await supabase
+        .from("fares")
+        .select("*")
+        .eq("origin", finalDestination)
+        .eq("destination", finalOrigin)
+        .maybeSingle();
 
       // Insert new fare
       const { data, error } = await supabase
@@ -144,7 +154,13 @@ function AddFare() {
         throw error;
       }
 
-      setMessage("Fare added successfully!");
+      // ✅ Show helpful message if reverse route exists
+      if (reverseMatch) {
+        setMessage(`Fare added successfully! Note: Reverse route (${finalDestination} → ${finalOrigin}) exists with fare $${reverseMatch.fare}`);
+      } else {
+        setMessage("Fare added successfully!");
+      }
+      
       setOrigin("");
       setDestination("");
       setFare("");
@@ -267,7 +283,6 @@ function AddFare() {
                   border: '1px solid #ccc',
                   borderRadius: '4px',
                   cursor: 'pointer',
-                  // color: 'blue'
                 }}
               >
                 Back to list

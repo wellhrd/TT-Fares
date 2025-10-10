@@ -9,7 +9,6 @@ const supabase = createClient(
   process.env.REACT_APP_SUPABASE_ANON_KEY
 );
 
-
 function FareResult() {
   const query = new URLSearchParams(useLocation().search);
   const origin = query.get("origin");
@@ -33,13 +32,34 @@ function FareResult() {
         return;
       }
 
-      // Try to find fare matching origin → destination or reversed
-      const foundFare = data.find(f =>
-        (f.origin === origin && f.destination === destination) ||
-        (f.origin === destination && f.destination === origin)
+      // ✅ FIXED: Prioritize exact direction match first
+      // Step 1: Try to find exact match (origin → destination)
+      const exactMatch = data.find(f =>
+        f.origin === origin && f.destination === destination
       );
 
-      setFare(foundFare ? foundFare.fare : "Fare not available");
+      if (exactMatch) {
+        console.log(`Found exact match: ${origin} → ${destination} = ${exactMatch.fare}`);
+        setFare(exactMatch.fare);
+        setLoading(false);
+        return;
+      }
+
+      // Step 2: If no exact match, try reverse direction as fallback
+      const reverseMatch = data.find(f =>
+        f.origin === destination && f.destination === origin
+      );
+
+      if (reverseMatch) {
+        console.log(`Using reverse route: ${destination} → ${origin} = ${reverseMatch.fare}`);
+        setFare(reverseMatch.fare);
+        setLoading(false);
+        return;
+      }
+
+      // Step 3: No route found in either direction
+      console.log(`No route found between ${origin} and ${destination}`);
+      setFare("Fare not available");
       setLoading(false);
     };
 
@@ -54,7 +74,7 @@ function FareResult() {
         <p className="text-gray-500">Loading fare...</p>
       ) : (
         <div className="flex items-center text-[45px] text-black text-green-500">
-          {fare === "Fare not available" || typeof fare === "string" ? (
+          {fare === "Fare not available" || fare === "Error loading fare" ? (
             <p className="text-red-500 text-xl font-semibold">{fare}</p>
           ) : (
             <>
