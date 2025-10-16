@@ -404,7 +404,7 @@ function About() {
     {
       name: "Jordan Ramdass",
       role: "Security Specialist",
-      avatar: "https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png",
+      avatar: "https://cdn.pixabay.com/photo/2023/05/02/10/35/avatar-7964945_1280.png",
       profileLink: "https://jordanramdass.example.com", // Replace with real URL
       socials: {
         facebook: "https://facebook.com/jordanramdass",

@@ -103,7 +103,7 @@ function Home() {
       <div className="text-3xl font-bold mb-4 text-center">
         <h1> Calculate bus or taxi fares for Trinidad </h1>
       </div>
-      <p className="mb-6 text-center text-gray-600">
+      <p className="mb-6 text-center text-gray-400">
         Select your origin and destination to check the fare.
       </p>
 
